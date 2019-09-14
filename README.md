@@ -2,4 +2,4 @@
 
 matchingGame.py:
 
-![Matching Game Image](https://github.com/VinnieM-3/MemoryGames/edit/master/matchingGame.jpg)
+![Matching Game Image](https://github.com/VinnieM-3/MemoryGames/master/matchingGame.jpg)
