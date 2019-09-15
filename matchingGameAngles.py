@@ -2,6 +2,7 @@ import pygame
 import random
 from math import sin
 from math import cos
+from math import radians
 
 pygame.init()
 pygame.font.init()
@@ -13,7 +14,7 @@ class Card(object):
     def __init__(self, left, top, width, height,
                  back_color, front_color, solved_color,
                  display,
-                 font_color, text_font, value=None):
+                 line_color, value=None):
         self._width = width
         self._height = height
         self._rect = pygame.Rect(left, top, width, height)
@@ -21,8 +22,7 @@ class Card(object):
         self._back_color = back_color  # color of card when face down
         self._front_color = front_color  # color of card when face up
         self._solved_color = solved_color  # color of card after it is matched
-        self._font_color = font_color
-        self._text_font = text_font
+        self._line_color = line_color
         self._value = value  # the number we are trying to match
         self._unsolved = True  # is set to false once matched
         self._hidden = True  # card is face down to start
@@ -58,11 +58,11 @@ class Card(object):
         self._hidden = False
         self._times_seen += 1
         pygame.draw.rect(self._display, self._front_color, self._rect)
-        x_angle = (sin(int(self._value)) * 0.4 * min(self._width, self._height)) + self._rect.center[0]
-        y_angle = (cos(int(self._value)) * 0.4 * min(self._width, self._height)) + self._rect.center[1]
-        pygame.draw.circle(self._display, self._font_color,
+        x_angle_cord = (sin(radians(int(self._value))) * 0.4 * min(self._width, self._height)) + self._rect.center[0]
+        y_angle_cord = (cos(radians(int(self._value))) * 0.4 * min(self._width, self._height)) + self._rect.center[1]
+        pygame.draw.circle(self._display, self._line_color,
                            self._rect.center, int(0.4 * min(self._width, self._height)), 1)
-        pygame.draw.aaline(self._display, self._font_color, self._rect.center, (x_angle, y_angle))
+        pygame.draw.aaline(self._display, self._line_color, self._rect.center, (x_angle_cord, y_angle_cord))
 
     def hide_card(self):
         self._hidden = True
@@ -93,11 +93,10 @@ if __name__ == "__main__":
     display_width = 600
     display_height = 600
 
-    card_font = pygame.font.SysFont('Comic Sans MS', 48)
-    front_col = pygame.Color('white')
+    front_col = pygame.Color('black')
     solved_col = pygame.Color('#636363')
     back_col = pygame.Color('#293a32')
-    font_col = pygame.Color('black')
+    line_col = pygame.Color('green')
 
     score_font = pygame.font.SysFont('Comic Sans MS', 24)
     score_txt_col = pygame.Color('#d4c38f')
@@ -110,17 +109,20 @@ if __name__ == "__main__":
     cards = []
 
     game_display = pygame.display.set_mode((display_width, display_height))
-    pygame.display.set_caption('Matching Game (Angles!)')
+    pygame.display.set_caption('Matching Game (Angles)')
     game_display.fill(pygame.Color('#b5c9a6'))
 
     score_rect = pygame.draw.rect(game_display, pygame.Color('black'), pygame.Rect(0, 0, display_width, score_y_margin))
 
-    left_pos = game_display.get_width() - score_x_margin  # replaced commented line below
+    surf_6x6_txt = score_font.render("6 x 6", True, score_txt_col)
+    left_pos = (game_display.get_width() - score_x_margin - surf_6x6_txt.get_width())
+    surf_6x6_rect = game_display.blit(surf_6x6_txt, (left_pos, (score_y_margin - surf_6x6_txt.get_height()) / 2))
+
     surf_4x4_txt = score_font.render("4 x 4", True, score_txt_col)
     left_pos = left_pos - surf_4x4_txt.get_width() - score_x_margin
     surf_4x4_rect = game_display.blit(surf_4x4_txt, (left_pos, (score_y_margin - surf_4x4_txt.get_height()) / 2))
 
-    surf_sel_txt = score_font.render("Start Game:", True, score_txt_col)
+    surf_sel_txt = score_font.render("Select Game:", True, score_txt_col)
     left_pos = left_pos - surf_sel_txt.get_width() - score_x_margin
     game_display.blit(surf_sel_txt, (left_pos, (score_y_margin - surf_sel_txt.get_height()) / 2))
     
@@ -141,7 +143,7 @@ if __name__ == "__main__":
 
             # create numbered pairs of angles
             pairs = []
-            divs = 360 / (total_pairs + 1)
+            divs = 360 / total_pairs
             for x in range(1, total_pairs + 1):
                 pairs.append(x*divs)
                 pairs.append(x*divs)
@@ -163,7 +165,7 @@ if __name__ == "__main__":
                     new_card_x = ((col - 1) * card_horz_width) + (col * space_horz_width)
                     new_card_y = ((row - 1) * card_vert_height) + (row * space_vert_height) + score_y_margin
                     crd = Card(new_card_x, new_card_y, card_horz_width, card_vert_height,
-                               back_col, front_col, solved_col, game_display, font_col, card_font, str(rnd_item))
+                               back_col, front_col, solved_col, game_display, line_col, str(rnd_item))
 
                     cards.append(crd)
                     crd.hide_card()
@@ -175,6 +177,11 @@ if __name__ == "__main__":
                 new_game = True
                 num_cols = 4
                 num_rows = 4
+                pygame.time.wait(200)  # wait 200ms to avoid multiple new game mouse click events
+            if surf_6x6_rect.collidepoint(pygame.mouse.get_pos()):  # start new game 6 x 6
+                new_game = True
+                num_cols = 6
+                num_rows = 6
                 pygame.time.wait(200)  # wait 200ms to avoid multiple new game mouse click events
             for crd in cards:
                 if crd.is_clicked(pygame.mouse.get_pos()) and crd.is_hidden() and crd.is_unsolved():
