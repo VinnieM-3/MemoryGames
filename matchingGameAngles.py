@@ -58,8 +58,8 @@ class Card(object):
         self._hidden = False
         self._times_seen += 1
         pygame.draw.rect(self._display, self._front_color, self._rect)
-        x_angle_cord = (sin(radians(int(self._value))) * 0.4 * min(self._width, self._height)) + self._rect.center[0]
-        y_angle_cord = (cos(radians(int(self._value))) * 0.4 * min(self._width, self._height)) + self._rect.center[1]
+        x_angle_cord = (sin(radians(int(float(self._value)))) * 0.4 * min(self._width, self._height)) + self._rect.center[0]
+        y_angle_cord = (cos(radians(int(float(self._value)))) * 0.4 * min(self._width, self._height)) + self._rect.center[1]
         pygame.draw.circle(self._display, self._line_color,
                            self._rect.center, int(0.4 * min(self._width, self._height)), 1)
         pygame.draw.aaline(self._display, self._line_color, self._rect.center, (x_angle_cord, y_angle_cord))
