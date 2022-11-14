@@ -137,9 +137,9 @@ if __name__ == "__main__":
         if new_game:
             pygame.draw.rect(game_display, pygame.Color('#b5c9a6'),
                              pygame.Rect(0, score_y_margin, display_width, display_height - score_y_margin))
-            total_pairs = (num_cols * num_rows) / 2
+            total_pairs = (num_cols * num_rows) // 2
             max_score = total_pairs - 1  # player gets no credit for last two cards remaining
-            pairs = range(1, total_pairs + 1) + range(1, total_pairs + 1)  # create numbered pairs
+            pairs = list(range(1, total_pairs + 1)) + list(range(1, total_pairs + 1))  # create numbered pairs
 
             # calculate the width and height of the cards and the space between them
             card_horz_width = int((display_width * 0.8) / num_cols)
