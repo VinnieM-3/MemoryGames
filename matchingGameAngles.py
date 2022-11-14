@@ -144,7 +144,7 @@ if __name__ == "__main__":
             # create numbered pairs of angles
             pairs = []
             divs = 360 / total_pairs
-            for x in range(1, total_pairs + 1):
+            for x in list(range(1, total_pairs + 1)):
                 pairs.append(x*divs)
                 pairs.append(x*divs)
 
