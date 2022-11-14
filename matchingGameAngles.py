@@ -138,7 +138,7 @@ if __name__ == "__main__":
         if new_game:
             pygame.draw.rect(game_display, pygame.Color('#b5c9a6'),
                              pygame.Rect(0, score_y_margin, display_width, display_height - score_y_margin))
-            total_pairs = (num_cols * num_rows) / 2
+            total_pairs = (num_cols * num_rows) // 2
             max_score = total_pairs - 1  # player gets no credit for last two cards remaining
 
             # create numbered pairs of angles
